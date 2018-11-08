@@ -1,23 +1,22 @@
-const Flickr = require('flickrapi'),
-flickrOptions = {
-  api_key: '5fe70c8edd29429f2b274ca3737ad71e',
-  secret: 'a6803ae28951eaa9',
-  permissions: 'write',
-  authenticated: true,
-};
+const flickrUserKey = require('./enviroments/dev');
 
-Flickr.authenticate(flickrOptions, function(err, flickr) {
-  // we can now use "flickr" as our API object
-  if(err) { throw new Error(err); }
-  flickr.people.getPhotos(
-    {
-      user_id: '123675113@N02'
-    },
-    (error, result) => {
-      if (error) {
-        throw new Error(error);
-      }
-      console.log(result);
-    }
-  );
-});
+var Flickr = require('flickr-sdk');
+var flickr = new Flickr(
+  Flickr.OAuth.createPlugin(
+    flickrUserKey.FLICKR_API_KEY,
+    flickrUserKey.FLICKR_SECRET,
+    flickrUserKey.FLICKR_ACCESS_TOKEN,
+    flickrUserKey.FLICKR_ACCESS_TOKEN_SECRET
+  )
+);
+
+flickr.people
+  .getPhotos({
+    user_id: ''
+  })
+  .then(result => {
+    console.log(result.body);
+  })
+  .catch(error => {
+    throw new Error(error);
+  });
